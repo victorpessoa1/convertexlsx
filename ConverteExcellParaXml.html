@@ -15,6 +15,7 @@
 
     <script>
       let excelData;
+      let sequencial = 999999;
 
       document
         .getElementById("input-file")
@@ -141,12 +142,23 @@
           downloadXML(xml, MesAnoLote);
         });
       }
-
       function downloadXML(content, MesAnoLote) {
+        const now = new Date();
+        const dataAtual = `${now.getDate().toString().padStart(2, "0")}${(
+          now.getMonth() + 1
+        )
+          .toString()
+          .padStart(2, "0")}${now.getFullYear()}`;
+        const horaAtual = `${now.getHours().toString().padStart(2, "0")}${now
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}${now.getSeconds().toString().padStart(2, "0")}`;
+
         const blob = new Blob([content], { type: "application/xml" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `PrestacaoContas_${MesAnoLote}.xml`;
+        link.download = `Prestacao_1_244_${dataAtual}_${horaAtual}_${sequencial}.xml`;
+        sequencial--;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
