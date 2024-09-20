@@ -53,10 +53,23 @@
 
         // Para cada MesAnoLote, gerar um XML separado
         Object.keys(groupedData).forEach((MesAnoLote) => {
+          let ValorTotalEmolumentos = 0;
+          let ValorTotalTransacao = 0;
+          let ValorTotalFRJ = 0;
+          let ValorTotalFRC = 0;
+
           let xml =
             '<?xml version="1.0" encoding="UTF-8"?>\n<PrestacaoContas>\n';
 
           let rows = groupedData[MesAnoLote];
+
+          xml += `  <Cabecalho>\n`;
+          xml += `    <CodigoComarca>1</CodigoComarca>\n`;
+          xml += `    <CodigoCartorio>244</CodigoCartorio>\n`;
+          xml += `    <DataTransmissao>19092024</DataTransmissao>\n`;
+          xml += `    <HoraTransmissao>141220</HoraTransmissao>\n`;
+          xml += `    <MesAnoLote>${MesAnoLote}</MesAnoLote>\n`;
+          xml += `  </Cabecalho>\n`;
 
           rows.forEach((row, index) => {
             let CodigoAto = row[0];
@@ -78,14 +91,6 @@
             let NumeroDocumento = row[16];
             let TipoDocumento = row[17];
             let NomePessoa = row[18];
-
-            xml += `  <Cabecalho>\n`;
-            xml += `    <CodigoComarca>1</CodigoComarca>\n`;
-            xml += `    <CodigoCartorio>244</CodigoCartorio>\n`;
-            xml += `    <DataTransmissao>19092024</DataTransmissao>\n`;
-            xml += `    <HoraTransmissao>141220</HoraTransmissao>\n`;
-            xml += `    <MesAnoLote>${MesAnoLote}</MesAnoLote>\n`;
-            xml += `  </Cabecalho>\n`;
 
             xml += `  <AtoPraticado>\n`;
             xml += `    <SequencialAto>${index + 1}</SequencialAto>\n`;
@@ -127,15 +132,20 @@
             xml += `    <AtoPraticadoFilho> </AtoPraticadoFilho>\n`;
             xml += `  </AtoPraticado>\n`;
 
-            xml += `  <Rodape>\n`;
-            xml += `    <QuantidadeAtos>${rows.length}</QuantidadeAtos>\n`;
-            xml += `    <QuantidadeSelos>${rows.length}</QuantidadeSelos>\n`;
-            xml += `    <ValorTotalTransacao>${ValorTransacao}</ValorTotalTransacao>\n`;
-            xml += `    <ValorTotalEmolumentos>${ValorEmolumento}</ValorTotalEmolumentos>\n`;
-            xml += `    <ValorTotalFRJ>${ValorFRJ}</ValorTotalFRJ>\n`;
-            xml += `    <ValorTotalFRC>${ValorFRC}</ValorTotalFRC>\n`;
-            xml += `  </Rodape>\n`;
+            ValorTotalEmolumentos += parseFloat(ValorEmolumento);
+            ValorTotalTransacao += parseFloat(ValorTransacao);
+            ValorTotalFRJ += parseFloat(ValorFRJ);
+            ValorTotalFRC += parseFloat(ValorFRC);
           });
+
+          xml += `  <Rodape>\n`;
+          xml += `    <QuantidadeAtos>${rows.length}</QuantidadeAtos>\n`;
+          xml += `    <QuantidadeSelos>${rows.length}</QuantidadeSelos>\n`;
+          xml += `    <ValorTotalTransacao>${ValorTotalTransacao}</ValorTotalTransacao>\n`;
+          xml += `    <ValorTotalEmolumentos>${ValorTotalEmolumentos}</ValorTotalEmolumentos>\n`;
+          xml += `    <ValorTotalFRJ>${ValorTotalFRJ}</ValorTotalFRJ>\n`;
+          xml += `    <ValorTotalFRC>${ValorTotalFRC}</ValorTotalFRC>\n`;
+          xml += `  </Rodape>\n`;
 
           xml += "</PrestacaoContas>";
 
